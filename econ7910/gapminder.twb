@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 
-<!-- build 20192.19.0818.2120                               -->
-<workbook original-version='18.1' source-build='2019.2.3 (20192.19.0818.2120)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+<!-- build 20194.19.1211.1636                               -->
+<workbook original-version='18.1' source-build='2019.4.1 (20194.19.1211.1636)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
   <document-format-change-manifest>
     <AutoCreateAndUpdateDSDPhoneLayouts ignorable='true' predowngraded='true' />
     <SheetIdentifierTracking ignorable='true' predowngraded='true' />
@@ -236,7 +236,7 @@
       <column caption='Working Hours Weekly' datatype='string' name='[working_hours_weekly]' role='dimension' type='nominal' />
       <column caption='Year' datatype='integer' name='[year]' role='dimension' type='quantitative' />
       <column-instance column='[country]' derivation='None' name='[none:country:nk]' pivot='key' type='nominal' />
-      <layout dim-ordering='alphabetic' dim-percentage='0.466667' measure-ordering='alphabetic' measure-percentage='0.533333' show-structure='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.455556' measure-ordering='alphabetic' measure-percentage='0.544444' show-structure='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='shape' field='[none:country:nk]' type='shape'>
@@ -807,6 +807,9 @@
           </encoding>
         </style-rule>
       </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
     </datasource>
     <datasource caption='countries_by_continent' inline='true' name='federated.0fiahpe1s6akak19u5r5v0ckz0b3' version='18.1'>
       <connection class='federated'>
@@ -817,8 +820,8 @@
         </named-connections>
         <relation connection='textscan.0if4gze0pfru5c19iymjz06yec6f' name='countries_by_continent.csv' table='[countries_by_continent#csv]' type='table'>
           <columns character-set='UTF-8' header='yes' locale='en' separator=','>
-            <column datatype='string' name='Continent' ordinal='0' />
-            <column datatype='string' name='Country' ordinal='1' />
+            <column datatype='string' name='continent' ordinal='0' />
+            <column datatype='string' name='country' ordinal='1' />
             <column datatype='integer' name='Number of Records' ordinal='2' />
           </columns>
         </relation>
@@ -841,11 +844,11 @@
             </attributes>
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>Continent</remote-name>
+            <remote-name>continent</remote-name>
             <remote-type>129</remote-type>
-            <local-name>[Continent]</local-name>
+            <local-name>[continent]</local-name>
             <parent-name>[countries_by_continent.csv]</parent-name>
-            <remote-alias>Continent</remote-alias>
+            <remote-alias>continent</remote-alias>
             <ordinal>0</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
@@ -855,11 +858,11 @@
             <collation flag='0' name='LEN_RGB' />
           </metadata-record>
           <metadata-record class='column'>
-            <remote-name>Country</remote-name>
+            <remote-name>country</remote-name>
             <remote-type>129</remote-type>
-            <local-name>[Country]</local-name>
+            <local-name>[country]</local-name>
             <parent-name>[countries_by_continent.csv]</parent-name>
-            <remote-alias>Country</remote-alias>
+            <remote-alias>country</remote-alias>
             <ordinal>1</ordinal>
             <local-type>string</local-type>
             <aggregation>Count</aggregation>
@@ -884,7 +887,10 @@
       <aliases enabled='yes' />
       <column caption='Continent' datatype='string' name='[Continent]' role='dimension' type='nominal' />
       <column caption='Country' datatype='string' name='[Country]' role='dimension' semantic-role='[Country].[ISO3166_2]' type='nominal' />
-      <layout dim-ordering='alphabetic' dim-percentage='0.48254' measure-ordering='alphabetic' measure-percentage='0.51746' show-structure='true' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.571111' measure-ordering='alphabetic' measure-percentage='0.428889' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
     </datasource>
   </datasources>
   <worksheets>
@@ -991,7 +997,7 @@
               </zone>
             </zone>
             <zone fixed-size='326' h='98000' id='6' is-fixed='true' param='vert' type='layout-flow' w='32600' x='66600' y='1000'>
-              <zone h='13250' id='8' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0glv9ov0radnh3165t5jf12gu037].[sum:population:qk]' type='size' w='32600' x='66600' y='1000'>
+              <zone h='2750' id='8' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0glv9ov0radnh3165t5jf12gu037].[sum:population:qk]' type='size' w='32600' x='66600' y='1000'>
                 <zone-style>
                   <format attr='border-color' value='#000000' />
                   <format attr='border-style' value='none' />
@@ -999,7 +1005,7 @@
                   <format attr='margin' value='4' />
                 </zone-style>
               </zone>
-              <zone h='20750' id='9' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0fiahpe1s6akak19u5r5v0ckz0b3].[none:Continent:nk]' type='color' w='32600' x='66600' y='14250'>
+              <zone h='2750' id='9' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0fiahpe1s6akak19u5r5v0ckz0b3].[none:Continent:nk]' type='color' w='32600' x='66600' y='3750'>
                 <zone-style>
                   <format attr='border-color' value='#000000' />
                   <format attr='border-style' value='none' />
@@ -1007,7 +1013,7 @@
                   <format attr='margin' value='4' />
                 </zone-style>
               </zone>
-              <zone h='13750' id='10' name=' Gapminder Clone' synchronized='1' type='currpage' w='32600' x='66600' y='35000'>
+              <zone h='13750' id='10' name=' Gapminder Clone' synchronized='1' type='currpage' w='32600' x='66600' y='6500'>
                 <zone-style>
                   <format attr='border-color' value='#000000' />
                   <format attr='border-style' value='none' />
@@ -1029,8 +1035,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='700' minheight='700' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='21' type='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='22' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='24' type='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='23' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
                 <zone fixed-size='280' h='98000' id='3' is-fixed='true' name=' Gapminder Clone' w='65800' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -1040,7 +1046,7 @@
                     <format attr='padding' value='0' />
                   </zone-style>
                 </zone>
-                <zone h='13250' id='8' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0glv9ov0radnh3165t5jf12gu037].[sum:population:qk]' type='size' w='32600' x='66600' y='1000'>
+                <zone h='2750' id='8' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0glv9ov0radnh3165t5jf12gu037].[sum:population:qk]' type='size' w='32600' x='66600' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -1049,7 +1055,7 @@
                     <format attr='padding' value='0' />
                   </zone-style>
                 </zone>
-                <zone h='20750' id='9' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0fiahpe1s6akak19u5r5v0ckz0b3].[none:Continent:nk]' type='color' w='32600' x='66600' y='14250'>
+                <zone h='2750' id='9' name=' Gapminder Clone' pane-specification-id='0' param='[federated.0fiahpe1s6akak19u5r5v0ckz0b3].[none:Continent:nk]' type='color' w='32600' x='66600' y='3750'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -1058,7 +1064,7 @@
                     <format attr='padding' value='0' />
                   </zone-style>
                 </zone>
-                <zone h='13750' id='10' name=' Gapminder Clone' synchronized='1' type='currpage' w='32600' x='66600' y='35000'>
+                <zone h='13750' id='10' name=' Gapminder Clone' synchronized='1' type='currpage' w='32600' x='66600' y='6500'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
                     <format attr='border-style' value='none' />
@@ -1126,7 +1132,6 @@
             <card type='currpage' />
             <card type='filters' />
             <card type='marks' />
-            <card pane-specification-id='0' param='[federated.0glv9ov0radnh3165t5jf12gu037].[sum:population:qk]' type='size' />
           </strip>
         </edge>
         <edge name='top'>
@@ -1138,11 +1143,6 @@
           </strip>
           <strip size='31'>
             <card type='title' />
-          </strip>
-        </edge>
-        <edge name='right'>
-          <strip size='160'>
-            <card pane-specification-id='0' param='[federated.0fiahpe1s6akak19u5r5v0ckz0b3].[none:Continent:nk]' type='color' />
           </strip>
         </edge>
       </cards>
