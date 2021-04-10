@@ -1,0 +1,177 @@
+---
+title: "R sample code"
+output: html_notebook
+---
+
+# Sample code in R for Tableau integration
+
+## Circle packing
+
+```{r}
+# tidyverse is the de facto standard library of R
+# packcircles is the library for computing the position of the bubbles chart
+library(tidyverse)
+library(packcircles)
+
+# read gapminder csv and filter the population of each country year 2018
+gapminder <- 
+  read_csv("data/gapminder-data-with-continent.csv") %>%
+  filter(year == 2018) %>%
+  select(country, population)
+
+# feed the population numbers to packcircles library to get the values for x and y axis
+xy <- 
+  circleProgressiveLayout(gapminder$population) %>%
+  select(x, y)
+
+# bind country/population columns and x,y columns into the same data table 
+gapminder_xy <- bind_cols(gapminder, xy)
+
+# plot to verify the bubble positions
+# ggplot(gapminder_xy, aes(x, y, size=population)) +
+#   geom_point(alpha)
+```
+
+## UN votes dataset: dimenion reduction
+
+```{r}
+# tidymodels provide a set of packages with more unified and user-friend interface for data science modeling
+# skimr provide summary statistic functions for your data
+library(tidyverse)
+library(tidymodels)
+library(lubridate)
+library(skimr)
+```
+
+### Get, view and explore data
+
+```{r}
+# read data files which are relevant for this analysis 
+# please find data description at: https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-03-23/readme.md
+rollcalls <- read_csv("data/unvotes/roll_calls.csv") %>%
+  filter(`date` > ymd('2015-01-01'))
+unvotes <- read_csv("data/unvotes/unvotes.csv") %>%
+  filter(rcid %in% rollcalls$rcid)
+issues <- read_csv("data/unvotes/issues.csv")
+
+# Summary statistics of the data
+skim(unvotes)
+skim(issues)
+```
+
+### Preprocessing and feature engineering (dimension reduction here)
+
+```{r}
+# preprocess the data and encoding with numerical values
+# so that it would be much easier to find correlations or clusters
+# then we pivot the data from long table to wide table so that each country is an observation
+df_unvotes <-
+  unvotes %>%
+  select(country, rcid, vote) %>%
+  mutate(vote = factor(vote, levels = c("no", "abstain", "yes")),
+         vote = as.numeric(vote) - 2) %>% 
+  pivot_wider(names_from = "rcid", values_from = "vote", values_fill = 0)
+
+# ============== method 1: traditional PCA =================================================
+# Using recipe package to do feature engineering with traditional PCA
+pca_rec <- recipe(~., data = df_unvotes) %>%
+  update_role(country, new_role = "id") %>%
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors())
+
+# bake the recipe (execute the preprocessing and feature engineering instructions) to preprocessed data
+pca_prep <- prep(pca_rec)
+pca_baked <- bake(pca_prep, new_data = NULL)
+
+# ============== method 2: UMAP - good for high dimensional data reduction ===================
+# embed packages has the extra recipe for UMAP algorithm
+library(embed)
+# Using recipe package to do feature engineering with UMAP
+umap_rec <- recipe(~., data = df_unvotes) %>%
+  update_role(country, new_role = "id") %>%
+  step_normalize(all_predictors()) %>%
+  step_umap(all_predictors())
+
+# bake the recipe (execute the preprocessing and feature engineering instructions) to preprocessed data
+umap_prep <- prep(umap_rec)
+umap_baked <- bake(umap_prep, new_data = NULL)
+```
+
+### Preliminary viz
+
+```{r}
+# Check how the countries are distributed using a scatter plot for PCA result
+ggplot(pca_baked, aes(PC1, PC2, label = country)) +
+  geom_point(color = "midnightblue", alpha = 0.7,  size= 2) +
+  geom_text(check_overlap = TRUE, hjust = "inward")
+
+# For UMAP result
+# ggplot(umap_baked, aes(umap_1, umap_2, label = country)) +
+#   geom_point(color = "midnightblue", alpha = 0.7,  size= 2) +
+#   geom_text(check_overlap = TRUE, hjust = "inward") 
+
+# output the PCA results
+# write_csv(pca_baked, file = "data/unvotes/2015-2019_unvotes_PCA.csv")
+# write_csv(umap_baked, file = "data/unvotes/2015-2019_unvotes_UMAP.csv")
+```
+
+## Build a logistic regression model for credit card default prediction 
+
+```{r}
+library(tidyverse)
+library(broom)
+library(ROCR)
+
+Default <- read_csv('./data/creditcard-default.csv') %>% mutate_if(is.character, factor)
+
+# scatterplot of the default dataset
+ggplot(Default, aes(x = balance, y = income, fill = default)) +
+  geom_point(pch=21, size=3, alpha = .55)
+
+# logistic regression of the dataset 
+ggplot(Default, aes(x = default, y = balance, color = default)) +
+  geom_boxplot()
+
+# split train and test datasets
+set.seed(123)
+sample <- sample(c(TRUE, FALSE), nrow(Default), replace = T, prob = c(0.8,0.2))
+train <- Default[sample, ]
+test <- Default[!sample, ]
+
+# fit model 1
+dft_model1 <- glm(default ~ balance, family = "binomial", data = train)
+tidy(dft_model1)
+
+# plot model 1
+Default %>%
+  mutate(prob = ifelse(default == 'Yes', 1, 0)) %>%
+  ggplot(aes(balance, prob)) +
+  geom_point(alpha = .15) +
+  geom_smooth(method = 'glm', method.args = list(family = 'binomial')) +
+  ggtitle('Logistic regression model fit 1 on the Default dataset') +
+  ylab("probability of default")
+
+# fit model 2
+dft_model2 <- glm(default ~ balance + income + student, family = "binomial", data = train)
+tidy(dft_model2)
+
+anova(dft_model1, dft_model2, test = 'Chisq')
+
+# run prediction on test set
+test_m1 <- predict(dft_model1, newdata = test, type = "response")
+test_m2 <- predict(dft_model2, newdata = test, type = "response")
+
+# plot ROC curve
+par(mfrow=c(1, 2))
+
+prediction(test_m1, test$default) %>%
+  performance(measure = "tpr", x.measure = "fpr") %>%
+  plot()
+
+prediction(test_m2, test$default) %>%
+  performance(measure = "tpr", x.measure = "fpr") %>%
+  plot()
+
+# save model
+saveRDS(dft_model2, './dft_model.rds')
+```
